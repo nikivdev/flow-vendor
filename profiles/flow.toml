@@ -1,0 +1,14 @@
+[profile]
+name = "flow"
+generated_by = "scripts/vendor/vendor-repo.sh"
+
+[[crate]]
+name = "axum"
+repo_path = "crates/axum"
+manifest_path = "manifests/axum.toml"
+
+[[crate]]
+name = "reqwest"
+repo_path = "crates/reqwest"
+manifest_path = "manifests/reqwest.toml"
+
