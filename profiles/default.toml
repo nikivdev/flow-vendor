@@ -57,3 +57,8 @@ name = "sha1"
 repo_path = "crates/sha1"
 manifest_path = "manifests/sha1.toml"
 
+[[crate]]
+name = "sha2"
+repo_path = "crates/sha2"
+manifest_path = "manifests/sha2.toml"
+
