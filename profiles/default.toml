@@ -27,3 +27,8 @@ name = "url"
 repo_path = "crates/url"
 manifest_path = "manifests/url.toml"
 
+[[crate]]
+name = "crypto_secretbox"
+repo_path = "crates/crypto_secretbox"
+manifest_path = "manifests/crypto_secretbox.toml"
+
