@@ -52,3 +52,8 @@ name = "futures"
 repo_path = "crates/futures"
 manifest_path = "manifests/futures.toml"
 
+[[crate]]
+name = "sha1"
+repo_path = "crates/sha1"
+manifest_path = "manifests/sha1.toml"
+
