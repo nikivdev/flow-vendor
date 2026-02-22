@@ -47,3 +47,8 @@ name = "tracing-subscriber"
 repo_path = "crates/tracing-subscriber"
 manifest_path = "manifests/tracing-subscriber.toml"
 
+[[crate]]
+name = "futures"
+repo_path = "crates/futures"
+manifest_path = "manifests/futures.toml"
+
