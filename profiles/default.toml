@@ -32,3 +32,8 @@ name = "crypto_secretbox"
 repo_path = "crates/crypto_secretbox"
 manifest_path = "manifests/crypto_secretbox.toml"
 
+[[crate]]
+name = "portable-pty"
+repo_path = "crates/portable-pty"
+manifest_path = "manifests/portable-pty.toml"
+
