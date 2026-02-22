@@ -42,3 +42,8 @@ name = "tokio-stream"
 repo_path = "crates/tokio-stream"
 manifest_path = "manifests/tokio-stream.toml"
 
+[[crate]]
+name = "tracing-subscriber"
+repo_path = "crates/tracing-subscriber"
+manifest_path = "manifests/tracing-subscriber.toml"
+
