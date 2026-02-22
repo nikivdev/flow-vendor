@@ -82,3 +82,8 @@ name = "toml"
 repo_path = "crates/toml"
 manifest_path = "manifests/toml.toml"
 
+[[crate]]
+name = "clap"
+repo_path = "crates/clap"
+manifest_path = "manifests/clap.toml"
+
