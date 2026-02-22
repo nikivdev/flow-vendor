@@ -72,3 +72,8 @@ name = "crossterm"
 repo_path = "crates/crossterm"
 manifest_path = "manifests/crossterm.toml"
 
+[[crate]]
+name = "hmac"
+repo_path = "crates/hmac"
+manifest_path = "manifests/hmac.toml"
+
