@@ -1,0 +1,19 @@
+[profile]
+name = "default"
+generated_by = "scripts/vendor/vendor-repo.sh"
+
+[[crate]]
+name = "axum"
+repo_path = "crates/axum"
+manifest_path = "manifests/axum.toml"
+
+[[crate]]
+name = "reqwest"
+repo_path = "crates/reqwest"
+manifest_path = "manifests/reqwest.toml"
+
+[[crate]]
+name = "tower-http"
+repo_path = "crates/tower-http"
+manifest_path = "manifests/tower-http.toml"
+
