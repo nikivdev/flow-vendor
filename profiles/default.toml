@@ -22,3 +22,8 @@ name = "ratatui"
 repo_path = "crates/ratatui"
 manifest_path = "manifests/ratatui.toml"
 
+[[crate]]
+name = "url"
+repo_path = "crates/url"
+manifest_path = "manifests/url.toml"
+
