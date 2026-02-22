@@ -37,3 +37,8 @@ name = "portable-pty"
 repo_path = "crates/portable-pty"
 manifest_path = "manifests/portable-pty.toml"
 
+[[crate]]
+name = "tokio-stream"
+repo_path = "crates/tokio-stream"
+manifest_path = "manifests/tokio-stream.toml"
+
