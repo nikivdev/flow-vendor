@@ -77,3 +77,8 @@ name = "hmac"
 repo_path = "crates/hmac"
 manifest_path = "manifests/hmac.toml"
 
+[[crate]]
+name = "toml"
+repo_path = "crates/toml"
+manifest_path = "manifests/toml.toml"
+
