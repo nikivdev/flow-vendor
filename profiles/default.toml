@@ -67,3 +67,8 @@ name = "tokio"
 repo_path = "crates/tokio"
 manifest_path = "manifests/tokio.toml"
 
+[[crate]]
+name = "crossterm"
+repo_path = "crates/crossterm"
+manifest_path = "manifests/crossterm.toml"
+
