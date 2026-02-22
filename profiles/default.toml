@@ -62,3 +62,8 @@ name = "sha2"
 repo_path = "crates/sha2"
 manifest_path = "manifests/sha2.toml"
 
+[[crate]]
+name = "tokio"
+repo_path = "crates/tokio"
+manifest_path = "manifests/tokio.toml"
+
