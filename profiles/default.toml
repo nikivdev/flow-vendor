@@ -17,3 +17,8 @@ name = "tower-http"
 repo_path = "crates/tower-http"
 manifest_path = "manifests/tower-http.toml"
 
+[[crate]]
+name = "ratatui"
+repo_path = "crates/ratatui"
+manifest_path = "manifests/ratatui.toml"
+
