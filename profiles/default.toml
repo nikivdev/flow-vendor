@@ -127,3 +127,8 @@ name = "regex"
 repo_path = "crates/regex"
 manifest_path = "manifests/regex.toml"
 
+[[crate]]
+name = "serde"
+repo_path = "crates/serde"
+manifest_path = "manifests/serde.toml"
+
