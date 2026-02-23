@@ -97,3 +97,8 @@ name = "ignore"
 repo_path = "crates/ignore"
 manifest_path = "manifests/ignore.toml"
 
+[[crate]]
+name = "x25519-dalek"
+repo_path = "crates/x25519-dalek"
+manifest_path = "manifests/x25519-dalek.toml"
+
