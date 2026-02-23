@@ -102,3 +102,8 @@ name = "x25519-dalek"
 repo_path = "crates/x25519-dalek"
 manifest_path = "manifests/x25519-dalek.toml"
 
+[[crate]]
+name = "rusqlite"
+repo_path = "crates/rusqlite"
+manifest_path = "manifests/rusqlite.toml"
+
