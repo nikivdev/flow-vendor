@@ -122,3 +122,8 @@ name = "notify"
 repo_path = "crates/notify"
 manifest_path = "manifests/notify.toml"
 
+[[crate]]
+name = "regex"
+repo_path = "crates/regex"
+manifest_path = "manifests/regex.toml"
+
