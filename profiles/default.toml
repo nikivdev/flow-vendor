@@ -107,3 +107,8 @@ name = "rusqlite"
 repo_path = "crates/rusqlite"
 manifest_path = "manifests/rusqlite.toml"
 
+[[crate]]
+name = "rmp-serde"
+repo_path = "crates/rmp-serde"
+manifest_path = "manifests/rmp-serde.toml"
+
