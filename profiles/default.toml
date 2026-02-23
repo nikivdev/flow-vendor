@@ -112,3 +112,8 @@ name = "rmp-serde"
 repo_path = "crates/rmp-serde"
 manifest_path = "manifests/rmp-serde.toml"
 
+[[crate]]
+name = "ctrlc"
+repo_path = "crates/ctrlc"
+manifest_path = "manifests/ctrlc.toml"
+
