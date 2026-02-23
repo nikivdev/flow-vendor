@@ -117,3 +117,8 @@ name = "ctrlc"
 repo_path = "crates/ctrlc"
 manifest_path = "manifests/ctrlc.toml"
 
+[[crate]]
+name = "notify"
+repo_path = "crates/notify"
+manifest_path = "manifests/notify.toml"
+
