@@ -516,12 +516,12 @@ impl<'a> Text<'a> {
     }
 
     /// Returns an iterator over the lines of the text.
-    pub fn iter(&self) -> std::slice::Iter<Line<'a>> {
+    pub fn iter(&self) -> std::slice::Iter<'_, Line<'a>> {
         self.lines.iter()
     }
 
     /// Returns an iterator that allows modifying each line.
-    pub fn iter_mut(&mut self) -> std::slice::IterMut<Line<'a>> {
+    pub fn iter_mut(&mut self) -> std::slice::IterMut<'_, Line<'a>> {
         self.lines.iter_mut()
     }
 
@@ -708,7 +708,7 @@ pub trait ToText {
 /// error. This indicates an incorrect `Display` implementation since `fmt::Write for String` never
 /// returns an error itself.
 impl<T: fmt::Display> ToText for T {
-    fn to_text(&self) -> Text {
+    fn to_text(&self) -> Text<'_> {
         Text::raw(self.to_string())
     }
 }
