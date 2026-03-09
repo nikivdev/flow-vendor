@@ -36,7 +36,7 @@ impl ValueRef<'_> {
 
 impl<'a> ValueRef<'a> {
     /// If `self` is case `Integer`, returns the integral value. Otherwise,
-    /// returns [`Err(Error::InvalidColumnType)`](crate::Error::InvalidColumnType).
+    /// returns [`Err(FromSqlError::InvalidType)`](crate::types::from_sql::FromSqlError::InvalidType).
     #[inline]
     pub fn as_i64(&self) -> FromSqlResult<i64> {
         match *self {
@@ -47,7 +47,7 @@ impl<'a> ValueRef<'a> {
 
     /// If `self` is case `Null` returns None.
     /// If `self` is case `Integer`, returns the integral value.
-    /// Otherwise, returns [`Err(Error::InvalidColumnType)`](crate::Error::InvalidColumnType).
+    /// Otherwise, returns [`Err(FromSqlError::InvalidType)`](crate::types::from_sql::FromSqlError::InvalidType).
     #[inline]
     pub fn as_i64_or_null(&self) -> FromSqlResult<Option<i64>> {
         match *self {
@@ -58,7 +58,7 @@ impl<'a> ValueRef<'a> {
     }
 
     /// If `self` is case `Real`, returns the floating point value. Otherwise,
-    /// returns [`Err(Error::InvalidColumnType)`](crate::Error::InvalidColumnType).
+    /// returns [`Err(FromSqlError::InvalidType)`](crate::types::from_sql::FromSqlError::InvalidType).
     #[inline]
     pub fn as_f64(&self) -> FromSqlResult<f64> {
         match *self {
@@ -69,7 +69,7 @@ impl<'a> ValueRef<'a> {
 
     /// If `self` is case `Null` returns None.
     /// If `self` is case `Real`, returns the floating point value.
-    /// Otherwise, returns [`Err(Error::InvalidColumnType)`](crate::Error::InvalidColumnType).
+    /// Otherwise, returns [`Err(FromSqlError::InvalidType)`](crate::types::from_sql::FromSqlError::InvalidType).
     #[inline]
     pub fn as_f64_or_null(&self) -> FromSqlResult<Option<f64>> {
         match *self {
@@ -80,33 +80,31 @@ impl<'a> ValueRef<'a> {
     }
 
     /// If `self` is case `Text`, returns the string value. Otherwise, returns
-    /// [`Err(Error::InvalidColumnType)`](crate::Error::InvalidColumnType).
+    /// [`Err(FromSqlError::InvalidType)`](crate::types::from_sql::FromSqlError::InvalidType).
     #[inline]
     pub fn as_str(&self) -> FromSqlResult<&'a str> {
         match *self {
-            ValueRef::Text(t) => {
-                std::str::from_utf8(t).map_err(|e| FromSqlError::Other(Box::new(e)))
-            }
+            ValueRef::Text(t) => std::str::from_utf8(t).map_err(FromSqlError::other),
             _ => Err(FromSqlError::InvalidType),
         }
     }
 
     /// If `self` is case `Null` returns None.
     /// If `self` is case `Text`, returns the string value.
-    /// Otherwise, returns [`Err(Error::InvalidColumnType)`](crate::Error::InvalidColumnType).
+    /// Otherwise, returns [`Err(FromSqlError::InvalidType)`](crate::types::from_sql::FromSqlError::InvalidType).
     #[inline]
     pub fn as_str_or_null(&self) -> FromSqlResult<Option<&'a str>> {
         match *self {
             ValueRef::Null => Ok(None),
             ValueRef::Text(t) => std::str::from_utf8(t)
-                .map_err(|e| FromSqlError::Other(Box::new(e)))
+                .map_err(FromSqlError::other)
                 .map(Some),
             _ => Err(FromSqlError::InvalidType),
         }
     }
 
     /// If `self` is case `Blob`, returns the byte slice. Otherwise, returns
-    /// [`Err(Error::InvalidColumnType)`](crate::Error::InvalidColumnType).
+    /// [`Err(FromSqlError::InvalidType)`](crate::types::from_sql::FromSqlError::InvalidType).
     #[inline]
     pub fn as_blob(&self) -> FromSqlResult<&'a [u8]> {
         match *self {
@@ -117,7 +115,7 @@ impl<'a> ValueRef<'a> {
 
     /// If `self` is case `Null` returns None.
     /// If `self` is case `Blob`, returns the byte slice.
-    /// Otherwise, returns [`Err(Error::InvalidColumnType)`](crate::Error::InvalidColumnType).
+    /// Otherwise, returns [`Err(FromSqlError::InvalidType)`](crate::types::from_sql::FromSqlError::InvalidType).
     #[inline]
     pub fn as_blob_or_null(&self) -> FromSqlResult<Option<&'a [u8]>> {
         match *self {
@@ -153,16 +151,16 @@ impl<'a> ValueRef<'a> {
 impl From<ValueRef<'_>> for Value {
     #[inline]
     #[track_caller]
-    fn from(borrowed: ValueRef<'_>) -> Value {
+    fn from(borrowed: ValueRef<'_>) -> Self {
         match borrowed {
-            ValueRef::Null => Value::Null,
-            ValueRef::Integer(i) => Value::Integer(i),
-            ValueRef::Real(r) => Value::Real(r),
+            ValueRef::Null => Self::Null,
+            ValueRef::Integer(i) => Self::Integer(i),
+            ValueRef::Real(r) => Self::Real(r),
             ValueRef::Text(s) => {
                 let s = std::str::from_utf8(s).expect("invalid UTF-8");
-                Value::Text(s.to_string())
+                Self::Text(s.to_string())
             }
-            ValueRef::Blob(b) => Value::Blob(b.to_vec()),
+            ValueRef::Blob(b) => Self::Blob(b.to_vec()),
         }
     }
 }
@@ -183,7 +181,7 @@ impl<'a> From<&'a [u8]> for ValueRef<'a> {
 
 impl<'a> From<&'a Value> for ValueRef<'a> {
     #[inline]
-    fn from(value: &'a Value) -> ValueRef<'a> {
+    fn from(value: &'a Value) -> Self {
         match *value {
             Value::Null => ValueRef::Null,
             Value::Integer(i) => ValueRef::Integer(i),
@@ -194,12 +192,12 @@ impl<'a> From<&'a Value> for ValueRef<'a> {
     }
 }
 
-impl<'a, T> From<Option<T>> for ValueRef<'a>
+impl<T> From<Option<T>> for ValueRef<'_>
 where
-    T: Into<ValueRef<'a>>,
+    T: Into<Self>,
 {
     #[inline]
-    fn from(s: Option<T>) -> ValueRef<'a> {
+    fn from(s: Option<T>) -> Self {
         match s {
             Some(x) => x.into(),
             None => ValueRef::Null,
@@ -213,8 +211,8 @@ where
     feature = "vtab",
     feature = "preupdate_hook"
 ))]
-impl<'a> ValueRef<'a> {
-    pub(crate) unsafe fn from_value(value: *mut crate::ffi::sqlite3_value) -> ValueRef<'a> {
+impl ValueRef<'_> {
+    pub(crate) unsafe fn from_value(value: *mut crate::ffi::sqlite3_value) -> Self {
         use crate::ffi;
         use std::slice::from_raw_parts;
 
@@ -258,12 +256,14 @@ impl<'a> ValueRef<'a> {
         }
     }
 
-    // TODO sqlite3_value_nochange // 3.22.0 & VTab xUpdate
     // TODO sqlite3_value_frombind // 3.28.0
 }
 
 #[cfg(test)]
 mod test {
+    #[cfg(all(target_family = "wasm", target_os = "unknown"))]
+    use wasm_bindgen_test::wasm_bindgen_test as test;
+
     use super::ValueRef;
     use crate::types::FromSqlResult;
 
@@ -331,5 +331,19 @@ mod test {
         assert!(ValueRef::Integer(1).as_bytes_or_null().is_err());
         assert_eq!(ValueRef::Blob(b"").as_bytes_or_null(), Ok(Some(&b""[..])));
         Ok(())
+    }
+    #[test]
+    fn from_value() {
+        use crate::types::Value;
+        assert_eq!(
+            ValueRef::from(&Value::Text("".to_owned())),
+            ValueRef::Text(b"")
+        );
+        assert_eq!(ValueRef::from(&Value::Blob(vec![])), ValueRef::Blob(b""));
+    }
+    #[test]
+    fn from_option() {
+        assert_eq!(ValueRef::from(None as Option<&str>), ValueRef::Null);
+        assert_eq!(ValueRef::from(Some("")), ValueRef::Text(b""));
     }
 }

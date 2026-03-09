@@ -5,7 +5,7 @@ use std::convert;
 use super::{Error, Result, Statement};
 use crate::types::{FromSql, FromSqlError, ValueRef};
 
-/// A handle for the resulting rows of a query.
+/// A handle (lazy fallible streaming iterator) for the resulting rows of a query.
 #[must_use = "Rows is lazy and will do nothing unless consumed"]
 pub struct Rows<'stmt> {
     pub(crate) stmt: Option<&'stmt Statement<'stmt>>,
@@ -34,7 +34,7 @@ impl<'stmt> Rows<'stmt> {
     /// consider using [`query_map`](Statement::query_map) or
     /// [`query_and_then`](Statement::query_and_then) instead, which
     /// return types that implement `Iterator`.
-    #[allow(clippy::should_implement_trait)] // cannot implement Iterator
+    #[expect(clippy::should_implement_trait)] // cannot implement Iterator
     #[inline]
     pub fn next(&mut self) -> Result<Option<&Row<'stmt>>> {
         self.advance()?;
@@ -90,7 +90,7 @@ impl<'stmt> Rows<'stmt> {
 
 impl<'stmt> Rows<'stmt> {
     #[inline]
-    pub(crate) fn new(stmt: &'stmt Statement<'stmt>) -> Rows<'stmt> {
+    pub(crate) fn new(stmt: &'stmt Statement<'stmt>) -> Self {
         Rows {
             stmt: Some(stmt),
             row: None,
@@ -107,7 +107,7 @@ impl<'stmt> Rows<'stmt> {
 }
 
 impl Drop for Rows<'_> {
-    #[allow(unused_must_use)]
+    #[expect(unused_must_use)]
     #[inline]
     fn drop(&mut self) {
         self.reset();
@@ -247,7 +247,7 @@ pub struct Row<'stmt> {
     pub(crate) stmt: &'stmt Statement<'stmt>,
 }
 
-impl<'stmt> Row<'stmt> {
+impl Row<'_> {
     /// Get the value of a particular column of the result row.
     ///
     /// # Panics
@@ -355,7 +355,7 @@ impl<'stmt> AsRef<Statement<'stmt>> for Row<'stmt> {
 /// Debug `Row` like an ordered `Map<Result<&str>, Result<(Type, ValueRef)>>`
 /// with column name as key except that for `Type::Blob` only its size is
 /// printed (not its content).
-impl<'stmt> std::fmt::Debug for Row<'stmt> {
+impl std::fmt::Debug for Row<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut dm = f.debug_map();
         for c in 0..self.stmt.column_count() {
@@ -393,7 +393,7 @@ impl<'stmt> std::fmt::Debug for Row<'stmt> {
 }
 
 mod sealed {
-    /// This trait exists just to ensure that the only impls of `trait Params`
+    /// This trait exists just to ensure that the only impls of `trait RowIndex`
     /// that are allowed are ones in this crate.
     pub trait Sealed {}
     impl Sealed for usize {}
@@ -404,7 +404,7 @@ mod sealed {
 ///
 /// It is only implemented for `usize` and `&str`.
 pub trait RowIndex: sealed::Sealed {
-    /// Returns the index of the appropriate column, or `None` if no such
+    /// Returns the index of the appropriate column, or `Error` if no such
     /// column exists.
     fn idx(&self, stmt: &Statement<'_>) -> Result<usize>;
 }
@@ -438,7 +438,7 @@ macro_rules! tuple_try_from_row {
             fn try_from(row: &'a Row<'a>) -> Result<Self> {
                 let mut index = 0;
                 $(
-                    #[allow(non_snake_case)]
+                    #[expect(non_snake_case)]
                     let $field = row.get::<_, $field>(index)?;
                     index += 1;
                 )*
@@ -463,6 +463,9 @@ tuples_try_from_row!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P);
 
 #[cfg(test)]
 mod tests {
+    #[cfg(all(target_family = "wasm", target_os = "unknown"))]
+    use wasm_bindgen_test::wasm_bindgen_test as test;
+
     use crate::{Connection, Result};
 
     #[test]
@@ -631,7 +634,7 @@ mod tests {
         )?;
         let mut rows = stmt.query([])?;
         let row = rows.next()?.unwrap();
-        let s = format!("{:?}", row);
+        let s = format!("{row:?}");
         assert_eq!(
             s,
             r#"{"name": (Text, "Lisa"), "id": (Integer, 1), "pi": (Real, 3.14), "blob": (Blob, 6), "void": (Null, ())}"#

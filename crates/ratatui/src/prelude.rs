@@ -18,7 +18,8 @@
 //! modules to make it easy to qualify types that would otherwise collide. E.g.:
 //!
 //! ```rust
-//! use ratatui::{prelude::*, widgets::*};
+//! use ratatui::prelude::*;
+//! use ratatui::widgets::*;
 //!
 //! #[derive(Debug, Default, PartialEq, Eq)]
 //! struct Line;
@@ -27,19 +28,20 @@
 //! assert_eq!(text::Line::default(), ratatui::text::Line::from(vec![]));
 //! ```
 
+pub use ratatui_core::backend::{self, Backend};
 #[cfg(feature = "crossterm")]
-pub use crate::backend::CrosstermBackend;
+pub use ratatui_crossterm::{CrosstermBackend, FromCrossterm, IntoCrossterm};
+
 #[cfg(all(not(windows), feature = "termion"))]
-pub use crate::backend::TermionBackend;
+pub use crate::backend::{FromTermion, IntoTermion, TermionBackend};
 #[cfg(feature = "termwiz")]
-pub use crate::backend::TermwizBackend;
-pub use crate::{
-    backend::{self, Backend},
-    buffer::{self, Buffer},
-    layout::{self, Alignment, Constraint, Direction, Layout, Margin, Position, Rect, Size},
-    style::{self, Color, Modifier, Style, Stylize},
-    symbols::{self},
-    text::{self, Line, Masked, Span, Text},
-    widgets::{block::BlockExt, StatefulWidget, Widget},
-    Frame, Terminal,
+pub use crate::backend::{FromTermwiz, IntoTermwiz, TermwizBackend};
+pub use crate::buffer::{self, Buffer};
+pub use crate::layout::{
+    self, Alignment, Constraint, Direction, HorizontalAlignment, Layout, Margin, Position, Rect,
+    Size, VerticalAlignment,
 };
+pub use crate::style::{self, Color, Modifier, Style, Stylize};
+pub use crate::text::{self, Line, Masked, Span, Text};
+pub use crate::widgets::{BlockExt, StatefulWidget, Widget};
+pub use crate::{Frame, Terminal, symbols};

@@ -1,7 +1,9 @@
 use super::{Null, Value, ValueRef};
 #[cfg(feature = "array")]
 use crate::vtab::array::Array;
-use crate::{Error, Result};
+#[cfg(feature = "fallible_uint")]
+use crate::Error;
+use crate::Result;
 use std::borrow::Cow;
 
 /// `ToSqlOutput` represents the possible output types for implementers of the
@@ -18,17 +20,14 @@ pub enum ToSqlOutput<'a> {
     /// A BLOB of the given length that is filled with
     /// zeroes.
     #[cfg(feature = "blob")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "blob")))]
     ZeroBlob(i32),
 
     /// n-th arg of an SQL scalar function
     #[cfg(feature = "functions")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "functions")))]
     Arg(usize),
 
     /// `feature = "array"`
     #[cfg(feature = "array")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "array")))]
     Array(Array),
 }
 
@@ -91,15 +90,12 @@ from_value!(non_zero std::num::NonZeroU32);
 // `i128` needs in `Into<Value>`, but it's probably fine for the moment, and not
 // worth adding another case to Value.
 #[cfg(feature = "i128_blob")]
-#[cfg_attr(docsrs, doc(cfg(feature = "i128_blob")))]
 from_value!(i128);
 
 #[cfg(feature = "i128_blob")]
-#[cfg_attr(docsrs, doc(cfg(feature = "i128_blob")))]
 from_value!(non_zero std::num::NonZeroI128);
 
 #[cfg(feature = "uuid")]
-#[cfg_attr(docsrs, doc(cfg(feature = "uuid")))]
 from_value!(uuid::Uuid);
 
 impl ToSql for ToSqlOutput<'_> {
@@ -120,7 +116,7 @@ impl ToSql for ToSqlOutput<'_> {
 }
 
 /// A trait for types that can be converted into SQLite values. Returns
-/// [`Error::ToSqlConversionFailure`] if the conversion fails.
+/// [`crate::Error::ToSqlConversionFailure`] if the conversion fails.
 pub trait ToSql {
     /// Converts Rust value to SQLite value
     fn to_sql(&self) -> Result<ToSqlOutput<'_>>;
@@ -200,17 +196,15 @@ to_sql_self!(std::num::NonZeroU16);
 to_sql_self!(std::num::NonZeroU32);
 
 #[cfg(feature = "i128_blob")]
-#[cfg_attr(docsrs, doc(cfg(feature = "i128_blob")))]
 to_sql_self!(i128);
 
 #[cfg(feature = "i128_blob")]
-#[cfg_attr(docsrs, doc(cfg(feature = "i128_blob")))]
 to_sql_self!(std::num::NonZeroI128);
 
 #[cfg(feature = "uuid")]
-#[cfg_attr(docsrs, doc(cfg(feature = "uuid")))]
 to_sql_self!(uuid::Uuid);
 
+#[cfg(feature = "fallible_uint")]
 macro_rules! to_sql_self_fallible(
     ($t:ty) => (
         impl ToSql for $t {
@@ -241,9 +235,13 @@ macro_rules! to_sql_self_fallible(
 );
 
 // Special implementations for usize and u64 because these conversions can fail.
+#[cfg(feature = "fallible_uint")]
 to_sql_self_fallible!(u64);
+#[cfg(feature = "fallible_uint")]
 to_sql_self_fallible!(usize);
+#[cfg(feature = "fallible_uint")]
 to_sql_self_fallible!(non_zero std::num::NonZeroU64);
+#[cfg(feature = "fallible_uint")]
 to_sql_self_fallible!(non_zero std::num::NonZeroUsize);
 
 impl<T: ?Sized> ToSql for &'_ T
@@ -310,6 +308,9 @@ impl<T: ToSql> ToSql for Option<T> {
 
 #[cfg(test)]
 mod test {
+    #[cfg(all(target_family = "wasm", target_os = "unknown"))]
+    use wasm_bindgen_test::wasm_bindgen_test as test;
+
     use super::{ToSql, ToSqlOutput};
     use crate::{types::Value, types::ValueRef, Result};
 
@@ -338,7 +339,9 @@ mod test {
         is_to_sql::<u8>();
         is_to_sql::<u16>();
         is_to_sql::<u32>();
+        #[cfg(feature = "fallible_uint")]
         is_to_sql::<u64>();
+        #[cfg(feature = "fallible_uint")]
         is_to_sql::<usize>();
     }
 
@@ -352,7 +355,9 @@ mod test {
         is_to_sql::<std::num::NonZeroU8>();
         is_to_sql::<std::num::NonZeroU16>();
         is_to_sql::<std::num::NonZeroU32>();
+        #[cfg(feature = "fallible_uint")]
         is_to_sql::<std::num::NonZeroU64>();
+        #[cfg(feature = "fallible_uint")]
         is_to_sql::<std::num::NonZeroUsize>();
     }
 
@@ -445,7 +450,7 @@ mod test {
 
     #[cfg(feature = "i128_blob")]
     #[test]
-    fn test_i128() -> crate::Result<()> {
+    fn test_i128() -> Result<()> {
         use crate::Connection;
         let db = Connection::open_in_memory()?;
         db.execute_batch("CREATE TABLE foo (i128 BLOB, desc TEXT)")?;
@@ -484,7 +489,7 @@ mod test {
 
     #[cfg(feature = "i128_blob")]
     #[test]
-    fn test_non_zero_i128() -> crate::Result<()> {
+    fn test_non_zero_i128() -> Result<()> {
         use std::num::NonZeroI128;
         macro_rules! nz {
             ($x:expr) => {
@@ -532,7 +537,7 @@ mod test {
 
     #[cfg(feature = "uuid")]
     #[test]
-    fn test_uuid() -> crate::Result<()> {
+    fn test_uuid() -> Result<()> {
         use crate::{params, Connection};
         use uuid::Uuid;
 

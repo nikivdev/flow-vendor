@@ -1,6 +1,6 @@
 //! Busy handler (when the database is locked)
+use std::ffi::{c_int, c_void};
 use std::mem;
-use std::os::raw::{c_int, c_void};
 use std::panic::catch_unwind;
 use std::ptr;
 use std::time::Duration;
@@ -80,9 +80,16 @@ impl InnerConnection {
 
 #[cfg(test)]
 mod test {
+    #[cfg(all(target_family = "wasm", target_os = "unknown"))]
+    use wasm_bindgen_test::wasm_bindgen_test as test;
+
     use crate::{Connection, ErrorCode, Result, TransactionBehavior};
     use std::sync::atomic::{AtomicBool, Ordering};
 
+    #[cfg_attr(
+        all(target_family = "wasm", target_os = "unknown"),
+        ignore = "no filesystem on this platform"
+    )]
     #[test]
     fn test_default_busy() -> Result<()> {
         let temp_dir = tempfile::tempdir().unwrap();
@@ -99,6 +106,10 @@ mod test {
         tx1.rollback()
     }
 
+    #[cfg_attr(
+        all(target_family = "wasm", target_os = "unknown"),
+        ignore = "no filesystem on this platform"
+    )]
     #[test]
     fn test_busy_handler() -> Result<()> {
         static CALLED: AtomicBool = AtomicBool::new(false);
