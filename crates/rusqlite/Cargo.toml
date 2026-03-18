@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "rusqlite"
-version = "0.38.0"
+version = "0.39.0"
 authors = ["The rusqlite developers"]
 build = false
 exclude = [
@@ -47,7 +47,7 @@ features = [
     "rusqlite-macros",
 ]
 all-features = false
-no-default-features = true
+no-default-features = false
 default-target = "x86_64-unknown-linux-gnu"
 rustdoc-args = [
     "--cfg",
@@ -68,7 +68,10 @@ repository = "rusqlite/rusqlite"
 status = "actively-developed"
 
 [features]
-array = ["vtab"]
+array = [
+    "vtab",
+    "pointer",
+]
 backup = []
 blob = []
 buildtime_bindgen = [
@@ -142,6 +145,7 @@ modern-full = [
     "window",
 ]
 modern_sqlite = ["libsqlite3-sys/bundled_bindings"]
+pointer = []
 preupdate_hook = [
     "libsqlite3-sys/preupdate_hook",
     "hooks",
@@ -227,7 +231,7 @@ harness = false
 version = "2.6.0"
 
 [dependencies.chrono]
-version = "0.4.38"
+version = "0.4.42"
 features = ["clock"]
 optional = true
 default-features = false
@@ -264,7 +268,7 @@ optional = true
 version = "1.6.1"
 
 [dependencies.time]
-version = "0.3.36"
+version = "0.3.47"
 features = [
     "formatting",
     "macros",
@@ -303,7 +307,7 @@ version = "1.0"
 features = ["v4"]
 
 [target.'cfg(all(target_family = "wasm", target_os = "unknown"))'.dependencies.chrono]
-version = "0.4.38"
+version = "0.4.42"
 features = ["wasmbind"]
 optional = true
 default-features = false
@@ -319,7 +323,7 @@ version = "0.5.1"
 default-features = false
 
 [target.'cfg(all(target_family = "wasm", target_os = "unknown"))'.dependencies.time]
-version = "0.3.36"
+version = "0.3.47"
 features = ["wasm-bindgen"]
 optional = true
 
@@ -329,7 +333,7 @@ features = ["js"]
 optional = true
 
 [target.'cfg(all(target_family = "wasm", target_os = "unknown"))'.dev-dependencies.getrandom]
-version = "0.3"
+version = "0.4"
 features = ["wasm_js"]
 
 [target.'cfg(all(target_family = "wasm", target_os = "unknown"))'.dev-dependencies.uuid]
@@ -343,4 +347,4 @@ version = "0.2.104"
 version = "0.3.54"
 
 [target.'cfg(not(all(target_family = "wasm", target_os = "unknown")))'.dependencies.libsqlite3-sys]
-version = "0.36.0"
+version = "0.37.0"

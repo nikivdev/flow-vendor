@@ -20,7 +20,7 @@
 - [ ] `sqlite3_os_init`
 - [ ] `sqlite3_os_end`
 
-- [ ] `sqlite3_config` (partially, `fn` callback for SQLITE_CONFIG_LOG)
+- [ ] `sqlite3_config` (partially, `fn` callback for SQLITE_CONFIG_LOG) (cannot be used by a loadable extension)
 - [X] `sqlite3_db_config`
 
 - [X] `sqlite3_extended_result_codes` (not public, internal use only)
@@ -110,7 +110,7 @@
 - [ ] `sqlite3_bind_text`
 - [X] `sqlite3_bind_text64`
 - [ ] `sqlite3_bind_value`
-- [X] `sqlite3_bind_pointer` (not public, internal use only)
+- [X] `sqlite3_bind_pointer`
 - [X] `sqlite3_bind_zeroblob`
 - [ ] `sqlite3_bind_zeroblob64`
 
@@ -134,7 +134,7 @@
 - [ ] `sqlite3_column_int`
 - [X] `sqlite3_column_int64`
 - [X] `sqlite3_column_text`
-- [X] `sqlite3_column_value`
+- [X] `sqlite3_column_value` (not public, internal use only)
 - [X] `sqlite3_column_bytes` (not public, internal use only)
 - [X] `sqlite3_column_type`
 
@@ -149,7 +149,7 @@
 - [X] `sqlite3_value_double`
 - [ ] `sqlite3_value_int`
 - [X] `sqlite3_value_int64`
-- [X] `sqlite3_value_pointer` (not public, internal use only)
+- [X] `sqlite3_value_pointer`
 - [X] `sqlite3_value_text`
 - [X] `sqlite3_value_bytes` (not public, internal use only)
 - [X] `sqlite3_value_type`
@@ -183,7 +183,7 @@
 - [ ] `sqlite3_result_text`
 - [X] `sqlite3_result_text64`
 - [X] `sqlite3_result_value`
-- [X] `sqlite3_result_pointer` (not public, internal use only)
+- [X] `sqlite3_result_pointer`
 - [X] `sqlite3_result_zeroblob`
 - [ ] `sqlite3_result_zeroblob64`
 - [X] `sqlite3_result_subtype`
@@ -217,7 +217,7 @@
 - [X] `sqlite3_table_column_metadata`
 
 - [X] `sqlite3_load_extension`
-- [X] `sqlite3_enable_load_extension`
+- [X] `sqlite3_enable_load_extension` (cannot be used by a loadable extension)
 - [X] `sqlite3_auto_extension` (`fn` callbak with Connection ref)
 - [X] `sqlite3_cancel_auto_extension`
 - [X] `sqlite3_reset_auto_extension`
@@ -304,7 +304,7 @@
 
 - [X] `sqlite3_db_cacheflush`
 
-- [X] `sqlite3_preupdate_hook` (`FnMut` callback with Connection ref, reference kept)
+- [X] `sqlite3_preupdate_hook` (`FnMut` callback with Connection ref, reference kept) (cannot be used by a loadable extension)
 - [X] `sqlite3_preupdate_old`
 - [X] `sqlite3_preupdate_count`
 - [X] `sqlite3_preupdate_depth`
